@@ -15,16 +15,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val textView = findViewById<TextView>(R.id.textView)
+
         textView.text = "Hello from code."
 
         // 10.0.2.2 is the localhost on the emulator host (dev machine)
-        hubConnection = HubConnectionBuilder.create("http://10.0.2.2:5000/default")
+        hubConnection = HubConnectionBuilder.create("http://10.0.2.2:5000/default?name=Android")
                 .withProtocol(MessagePackHubProtocol())
                 //.setHttpClientBuilderCallback({builder -> builder.})
                 .build()
 
-        hubConnection.on("Send", { textView.text = "Received message!" })
+        hubConnection.on("Send", { message: String -> runOnUiThread { textView.text = message } }, String::class.java)
 
         hubConnection.start().blockingAwait();
+
+        textView.text = "Connected!"
     }
 }
