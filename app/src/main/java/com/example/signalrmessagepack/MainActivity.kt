@@ -1,8 +1,10 @@
 package com.example.signalrmessagepack
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.textfield.TextInputEditText
 import com.microsoft.messagepack.MessagePackHubProtocol
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
@@ -15,6 +17,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val textView = findViewById<TextView>(R.id.textView)
+        val textInput = findViewById<TextInputEditText>(R.id.textInput)
+        val sendButton = findViewById<Button>(R.id.button)
 
         textView.text = "Hello from code."
 
@@ -29,5 +33,7 @@ class MainActivity : AppCompatActivity() {
         hubConnection.start().blockingAwait();
 
         textView.text = "Connected!"
+
+        sendButton.setOnClickListener { hubConnection.invoke("Send", "Android", textInput.text.toString()).blockingAwait() }
     }
 }
